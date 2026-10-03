@@ -1,0 +1,72 @@
+---
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import products from '../../data/products.json';
+
+const url = Astro.url;
+const category = url.searchParams.get('category');
+
+const filtered = category
+  ? products.products.filter(p => p.category === category)
+  : products.products;
+
+const activeCategory = products.categories.find(c => c.slug === category);
+---
+<Base title={activeCategory ? activeCategory.label : "All Products"}>
+  <Header slot="header" />
+
+  <section class="container" style="padding-top:3rem; padding-bottom:3rem;">
+    <h1 class="section-title">{activeCategory ? activeCategory.label : "All Products"}</h1>
+    {activeCategory && <p class="section-subtitle">{activeCategory.desc}</p>}
+
+    <!-- Category Filter -->
+    <div class="filter-bar">
+      <a href="/products/" class={`filter-btn ${!category ? 'active' : ''}`}>All</a>
+      {products.categories.map(cat => (
+        <a href={`/products/?category=${cat.slug}`} class={`filter-btn ${category === cat.slug ? 'active' : ''}`}>
+          {cat.label}
+        </a>
+      ))}
+    </div>
+
+    <div class="product-grid">
+      {filtered.map(p => (
+        <ProductCard
+          slug={p.slug}
+          model={p.model}
+          name={p.name}
+          shortDesc={p.shortDesc}
+          image={p.image}
+          categoryLabel={p.categoryLabel}
+          poeBudget={p.poeBudget}
+          management={p.management}
+        />
+      ))}
+    </div>
+
+    {filtered.length === 0 && (
+      <p style="text-align:center; color:#666; padding:3rem 0;">No products found in this category.</p>
+    )}
+  </section>
+
+  <Footer slot="footer" />
+</Base>
+
+<style>
+  .filter-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 2rem 0 2.5rem; justify-content: center; }
+  .filter-btn {
+    padding: 0.5rem 1.25rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 999px;
+    color: #666;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.15s;
+    background: #fff;
+  }
+  .filter-btn:hover { border-color: #0066cc; color: #0066cc; text-decoration: none; }
+  .filter-btn.active { background: #0066cc; color: #fff; border-color: #0066cc; }
+  .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+</style>

@@ -1,0 +1,153 @@
+---
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import products from '../../data/products.json';
+
+export function getStaticPaths() {
+  return products.products.map(p => ({ params: { slug: p.slug } }));
+}
+
+const { slug } = Astro.params;
+const product = products.products.find(p => p.slug === slug);
+
+if (!product) {
+  return Astro.redirect('/products/');
+}
+
+const related = products.products
+  .filter(p => p.category === product.category && p.slug !== slug)
+  .slice(0, 3);
+---
+<Base title={`${product.model} - ${product.name}`} description={product.shortDesc}>
+  <Header slot="header" />
+
+  <section class="container" style="padding-top:2rem; padding-bottom:4rem;">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <a href="/">Home</a>
+      <span>/</span>
+      <a href="/products/">Products</a>
+      <span>/</span>
+      <a href={`/products/?category=${product.category}`}>{product.categoryLabel}</a>
+      <span>/</span>
+      <span>{product.model}</span>
+    </nav>
+
+    <div class="product-detail">
+      <!-- Image -->
+      <div class="product-image">
+        <img src={product.image} alt={product.model} />
+      </div>
+
+      <!-- Info -->
+      <div class="product-info">
+        <span class="category-badge">{product.categoryLabel}</span>
+        <h1>{product.model}</h1>
+        <p class="product-name">{product.name}</p>
+        <p class="product-desc">{product.shortDesc}</p>
+
+        <div class="spec-table">
+          {product.poeBudget && (
+            <div class="spec-row">
+              <span class="spec-label">PoE Budget</span>
+              <span class="spec-value">{product.poeBudget}</span>
+            </div>
+          )}
+          {product.management && (
+            <div class="spec-row">
+              <span class="spec-label">Management</span>
+              <span class="spec-value">{product.management}</span>
+            </div>
+          )}
+          {product.distance && (
+            <div class="spec-row">
+              <span class="spec-label">Distance</span>
+              <span class="spec-value">{product.distance}</span>
+            </div>
+          )}
+          {product.type && (
+            <div class="spec-row">
+              <span class="spec-label">Type</span>
+              <span class="spec-value">{product.type}</span>
+            </div>
+          )}
+          {product.power && (
+            <div class="spec-row">
+              <span class="spec-label">Power Input</span>
+              <span class="spec-value">{product.power}</span>
+            </div>
+          )}
+          {product.temp && (
+            <div class="spec-row">
+              <span class="spec-label">Operating Temp</span>
+              <span class="spec-value">{product.temp}</span>
+            </div>
+          )}
+        </div>
+
+        <div class="cta-buttons">
+          <a href="/contact/" class="btn btn-primary">Request a Quote</a>
+          <a href="/products/" class="btn btn-outline">← Back to Products</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related Products -->
+    {related.length > 0 && (
+      <div class="related">
+        <h2>Related Products</h2>
+        <div class="related-grid">
+          {related.map(p => (
+            <a href={`/products/${p.slug}/`} class="related-card">
+              <img src={p.image} alt={p.model} />
+              <div>
+                <strong>{p.model}</strong>
+                <p>{p.shortDesc}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+  </section>
+
+  <Footer slot="footer" />
+</Base>
+
+<style>
+  .breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: #666; margin-bottom: 2rem; flex-wrap: wrap; }
+  .breadcrumb a { color: #0066cc; }
+  .breadcrumb span { color: #9ca3af; }
+
+  .product-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+  .product-image { background: #f9fafb; border-radius: 16px; overflow: hidden; }
+  .product-image img { width: 100%; height: auto; object-fit: cover; aspect-ratio: 4/3; }
+  .product-info { padding: 0.5rem 0; }
+  .category-badge { display: inline-block; background: #eff6ff; color: #0066cc; font-size: 0.75rem; font-weight: 600; padding: 0.25rem 0.75rem; border-radius: 999px; margin-bottom: 1rem; }
+  .product-info h1 { font-size: 2rem; color: #1a1a2e; margin-bottom: 0.25rem; }
+  .product-name { font-size: 1rem; color: #666; margin-bottom: 1rem; }
+  .product-desc { font-size: 1.1rem; color: #374151; line-height: 1.7; margin-bottom: 2rem; }
+
+  .spec-table { border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; margin-bottom: 2rem; }
+  .spec-row { display: flex; border-bottom: 1px solid #f3f4f6; }
+  .spec-row:last-child { border-bottom: none; }
+  .spec-label { width: 40%; padding: 0.875rem 1.25rem; background: #f9fafb; font-weight: 600; font-size: 0.875rem; color: #374151; }
+  .spec-value { width: 60%; padding: 0.875rem 1.25rem; font-size: 0.875rem; color: #1a1a2e; }
+
+  .cta-buttons { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  .related { margin-top: 4rem; padding-top: 3rem; border-top: 1px solid #e5e7eb; }
+  .related h2 { font-size: 1.5rem; margin-bottom: 1.5rem; }
+  .related-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .related-card { display: flex; gap: 1rem; align-items: center; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 12px; transition: all 0.2s; }
+  .related-card:hover { border-color: #0066cc; box-shadow: 0 4px 12px rgba(0,102,204,0.1); text-decoration: none; }
+  .related-card img { width: 80px; height: 60px; object-fit: cover; border-radius: 8px; flex-shrink: 0; background: #f9fafb; }
+  .related-card strong { display: block; font-size: 0.9rem; color: #1a1a2e; margin-bottom: 0.25rem; }
+  .related-card p { font-size: 0.75rem; color: #666; margin: 0; }
+
+  @media (max-width: 900px) {
+    .product-detail { grid-template-columns: 1fr; }
+    .related-grid { grid-template-columns: 1fr; }
+  }
+</style>

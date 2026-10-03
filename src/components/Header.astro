@@ -1,0 +1,64 @@
+---
+const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/products/", label: "Products" },
+  { href: "/about/", label: "About" },
+  { href: "/contact/", label: "Contact" },
+];
+const currentPath = Astro.url.pathname;
+---
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="/" class="logo">
+      <img src="/images/products/G500P-5F-1.jpg" alt="BestLink" width="40" height="40" style="border-radius:4px;" />
+      <span>BestLink</span>
+    </a>
+    <nav>
+      {navLinks.map(link => (
+        <a href={link.href} class={currentPath === link.href || (link.href !== "/" && currentPath.startsWith(link.href)) ? "active" : ""}>
+          {link.label}
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    text-decoration: none;
+  }
+  .logo:hover { text-decoration: none; }
+  nav { display: flex; gap: 0.25rem; }
+  nav a {
+    padding: 0.5rem 0.875rem;
+    border-radius: 6px;
+    color: #4b5563;
+    font-weight: 500;
+    transition: all 0.15s;
+  }
+  nav a:hover { background: #f3f4f6; color: #1a1a2e; text-decoration: none; }
+  nav a.active { color: #0066cc; background: #eff6ff; }
+  @media (max-width: 640px) {
+    nav a { padding: 0.5rem 0.5rem; font-size: 0.875rem; }
+  }
+</style>

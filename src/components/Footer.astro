@@ -1,0 +1,57 @@
+---
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>BestLink Technology</h4>
+        <p>Industrial network equipment supplier. Power over Ethernet switches, media converters for harsh environments.</p>
+      </div>
+      <div>
+        <h4>Products</h4>
+        <ul>
+          <li><a href="/products/?category=poe-switches">Industrial PoE Switches</a></li>
+          <li><a href="/products/?category=managed-switches">Managed PoE Switches</a></li>
+          <li><a href="/products/?category=media-converters">Media Converters</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li>Email: info@bestlinktec.com</li>
+          <li>Tel: +86-755-28288609</li>
+          <li>WhatsApp: +86-755-28288609</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; {year} BestLink Technology Co., Ltd. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: #1a1a2e;
+    color: #d1d5db;
+    padding: 3rem 0 1.5rem;
+    margin-top: 4rem;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  .footer-grid h4 { color: #fff; margin-bottom: 1rem; font-size: 1rem; }
+  .footer-grid p { font-size: 0.875rem; line-height: 1.7; }
+  .footer-grid ul { list-style: none; }
+  .footer-grid ul li { margin-bottom: 0.5rem; font-size: 0.875rem; }
+  .footer-grid a { color: #9ca3af; transition: color 0.15s; }
+  .footer-grid a:hover { color: #fff; text-decoration: none; }
+  .footer-bottom { border-top: 1px solid #374151; padding-top: 1.5rem; text-align: center; font-size: 0.875rem; }
+  @media (max-width: 768px) {
+    .footer-grid { grid-template-columns: 1fr; }
+  }
+</style>

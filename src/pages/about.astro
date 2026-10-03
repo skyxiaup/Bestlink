@@ -1,0 +1,58 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+<Base title="About Us">
+  <Header slot="header" />
+
+  <section class="container" style="padding-top:3rem; padding-bottom:4rem;">
+    <h1 class="section-title">About BestLink Technology</h1>
+    <p class="section-subtitle">Industrial network equipment built for reliability</p>
+
+    <div class="about-content">
+      <div class="about-text">
+        <p>BestLink Technology Co., Ltd. is a professional manufacturer and supplier of industrial network communication equipment. We specialize in Power over Ethernet (PoE) switches, managed switches, and media converters designed for demanding industrial environments.</p>
+        <p>Our products are widely used in factory automation, transportation systems, smart city infrastructure, video surveillance, and industrial networking applications worldwide.</p>
+        <h2>Our Products</h2>
+        <ul>
+          <li><strong>Industrial PoE Switches</strong> — Unmanaged and managed PoE switches with wide temperature ratings (-40°C to 75°C)</li>
+          <li><strong>Managed PoE Switches</strong> — Layer 2+ managed switches with VLAN, QoS, SNMP, and redundancy protocols</li>
+          <li><strong>Media Converters</strong> — Copper-to-fiber converters supporting distances up to 120km</li>
+        </ul>
+        <h2>Quality & Standards</h2>
+        <p>All BestLink products meet international standards including CE, FCC, and RoHS certifications. Our manufacturing facilities operate under strict quality management systems to ensure consistent, reliable performance in every deployment.</p>
+      </div>
+      <div class="about-stats">
+        <div class="stat">
+          <span class="stat-num">15+</span>
+          <span class="stat-label">Years Experience</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">50+</span>
+          <span class="stat-label">Countries Served</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">1000+</span>
+          <span class="stat-label">Deployments</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</Base>
+
+<style>
+  .about-content { display: grid; grid-template-columns: 2fr 1fr; gap: 4rem; margin-top: 3rem; }
+  .about-text h2 { font-size: 1.5rem; margin: 2rem 0 1rem; color: #1a1a2e; }
+  .about-text p { font-size: 1rem; line-height: 1.8; color: #374151; margin-bottom: 1rem; }
+  .about-text ul { list-style: none; padding: 0; }
+  .about-text ul li { padding: 0.5rem 0; border-bottom: 1px solid #f3f4f6; font-size: 0.95rem; color: #374151; }
+  .about-text ul li strong { color: #1a1a2e; }
+  .about-stats { display: flex; flex-direction: column; gap: 2rem; justify-content: center; }
+  .stat { text-align: center; padding: 2rem; background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 16px; color: #fff; }
+  .stat-num { display: block; font-size: 3rem; font-weight: 700; line-height: 1; margin-bottom: 0.5rem; }
+  .stat-label { font-size: 0.875rem; opacity: 0.8; }
+  @media (max-width: 900px) { .about-content { grid-template-columns: 1fr; } }
+</style>

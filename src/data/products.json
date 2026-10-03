@@ -1,0 +1,182 @@
+{
+  "products": [
+    {
+      "slug": "G500P-5F",
+      "model": "G500P-5F",
+      "name": "5-Port Fast Ethernet PoE Switch",
+      "category": "poe-switches",
+      "categoryLabel": "Industrial PoE Switches",
+      "shortDesc": "5x 10/100Mbps PoE ports + 1x 100M SFP slot",
+      "poeBudget": "120W",
+      "power": "52V DC",
+      "temp": "-40°C to 75°C",
+      "image": "/images/products/G500P-5F-1.jpg",
+      "featured": true
+    },
+    {
+      "slug": "G500P-5G",
+      "model": "G500P-5G",
+      "name": "5-Port Gigabit PoE Switch",
+      "category": "poe-switches",
+      "categoryLabel": "Industrial PoE Switches",
+      "shortDesc": "5x 10/100/1000M PoE ports",
+      "poeBudget": "120W",
+      "power": "52V DC",
+      "temp": "-40°C to 75°C",
+      "image": "/images/products/G500P-5G-1.jpg",
+      "featured": true
+    },
+    {
+      "slug": "G600P-4F-2FX",
+      "model": "G600P-4F-2F",
+      "name": "6-Port Fast Ethernet PoE Switch",
+      "category": "poe-switches",
+      "categoryLabel": "Industrial PoE Switches",
+      "shortDesc": "4x 10/100M PoE + 2x 100M SFP",
+      "poeBudget": "120W",
+      "power": "52V DC",
+      "temp": "-40°C to 75°C",
+      "image": "/images/products/G600P-4F-2FX-1.jpg",
+      "featured": false
+    },
+    {
+      "slug": "G600P-4G-2S",
+      "model": "G600P-4G-2S",
+      "name": "6-Port Gigabit PoE Switch",
+      "category": "poe-switches",
+      "categoryLabel": "Industrial PoE Switches",
+      "shortDesc": "4x 10/100/1000M PoE + 2x 1G SFP",
+      "poeBudget": "120W",
+      "power": "52V DC",
+      "temp": "-40°C to 75°C",
+      "image": "/images/products/G600P-4G-2S-1.jpg",
+      "featured": false
+    },
+    {
+      "slug": "G600P-4G-1TS",
+      "model": "G600P-4G-1TS",
+      "name": "6-Port Gigabit Managed PoE Switch",
+      "category": "managed-switches",
+      "categoryLabel": "Industrial Managed PoE Switches",
+      "shortDesc": "4x 10/100/1000M PoE + 1G SFP + 10G SFP+",
+      "poeBudget": "120W",
+      "management": "Web, CLI, SNMP",
+      "power": "52V DC",
+      "temp": "-40°C to 75°C",
+      "image": "/images/products/G600P-4G-1TS-1.jpg",
+      "featured": true
+    },
+    {
+      "slug": "G1200P-8F-1G-2S",
+      "model": "G1200P-8F-1G-2S",
+      "name": "8-Port Fast Ethernet Managed PoE Switch",
+      "category": "managed-switches",
+      "categoryLabel": "Industrial Managed PoE Switches",
+      "shortDesc": "8x 10/100M PoE + 1x 1G RJ45 + 2x 1G SFP",
+      "poeBudget": "240W",
+      "management": "Web, CLI, SNMP",
+      "power": "48-57V DC",
+      "temp": "-40°C to 75°C",
+      "image": "/images/products/G1200P-8F-1G-2S-1.jpg",
+      "featured": true
+    },
+    {
+      "slug": "G1200P-8F-2G-1S",
+      "model": "G1200P-8F-2G-1S",
+      "name": "8-Port Fast Ethernet Managed PoE Switch",
+      "category": "managed-switches",
+      "categoryLabel": "Industrial Managed PoE Switches",
+      "shortDesc": "8x 10/100M PoE + 2x 1G RJ45 + 1x 1G SFP",
+      "poeBudget": "240W",
+      "management": "Web, CLI, SNMP",
+      "power": "48-57V DC",
+      "temp": "-40°C to 75°C",
+      "image": "/images/products/G1200P-8F-2G-1S-1.jpg",
+      "featured": false
+    },
+    {
+      "slug": "G1200P-8G-2S",
+      "model": "G1200P-8G-2S",
+      "name": "8-Port Gigabit Managed PoE Switch",
+      "category": "managed-switches",
+      "categoryLabel": "Industrial Managed PoE Switches",
+      "shortDesc": "8x 10/100/1000M PoE + 2x 10G SFP+",
+      "poeBudget": "240W",
+      "management": "Web, CLI, SNMP",
+      "power": "48-57V DC",
+      "temp": "-40°C to 75°C",
+      "image": "/images/products/G1200P-8G-2S-1.jpg",
+      "featured": true
+    },
+    {
+      "slug": "G1200P-8G-2TS",
+      "model": "G1200P-8G-2TS",
+      "name": "8-Port Gigabit Managed PoE Switch (Dual Power)",
+      "category": "managed-switches",
+      "categoryLabel": "Industrial Managed PoE Switches",
+      "shortDesc": "8x 10/100/1000M PoE + 2x 10G SFP+ (Dual DC)",
+      "poeBudget": "240W",
+      "management": "Web, CLI, SNMP",
+      "power": "Dual 48-57V DC",
+      "temp": "-40°C to 75°C",
+      "image": "/images/products/G1200P-8G-2TS-1.jpg",
+      "featured": false
+    },
+    {
+      "slug": "G500P-1F-1FX",
+      "model": "G500P-1F-1FX",
+      "name": "10/100M Mini Media Converter",
+      "category": "media-converters",
+      "categoryLabel": "Media Converters",
+      "shortDesc": "1x 10/100M RJ45 + 1x 100M SC Fiber",
+      "distance": "20km/40km/60km",
+      "power": "12-56V DC",
+      "temp": "-40°C to 75°C",
+      "image": "/images/products/G500P-1F-1FX-1.jpg",
+      "featured": true
+    },
+    {
+      "slug": "G500P-1G-1GX",
+      "model": "G500P-1G-1GX",
+      "name": "10/100/1000M Media Converter",
+      "category": "media-converters",
+      "categoryLabel": "Media Converters",
+      "shortDesc": "1x 10/100/1000M RJ45 + 1x 1G SC Fiber",
+      "distance": "20km/40km/60km",
+      "power": "12-56V DC",
+      "temp": "-40°C to 75°C",
+      "image": "/images/products/G500P-1G-1GX-1.jpg",
+      "featured": true
+    },
+    {
+      "slug": "G500P-2G-2S",
+      "model": "G500P-2G-2S",
+      "name": "2-Port Gigabit Fiber Switch",
+      "category": "media-converters",
+      "categoryLabel": "Media Converters",
+      "shortDesc": "2x 10/100/1000M RJ45 + 2x 1G SFP",
+      "type": "Managed",
+      "power": "12-56V DC",
+      "temp": "-40°C to 75°C",
+      "image": "/images/products/G500P-2G-2S-1.jpg",
+      "featured": false
+    }
+  ],
+  "categories": [
+    {
+      "slug": "poe-switches",
+      "label": "Industrial PoE Switches",
+      "desc": "Industrial-grade Power over Ethernet switches designed for harsh environments with wide temperature ranges and robust construction. Ideal for factory automation, smart city, transportation, and surveillance applications."
+    },
+    {
+      "slug": "managed-switches",
+      "label": "Industrial Managed PoE Switches",
+      "desc": "Managed PoE switches with advanced Layer 2+ features including VLAN, QoS, SNMP, and redundancy protocols (ERPS, RSTP). Perfect for demanding industrial applications requiring network management."
+    },
+    {
+      "slug": "media-converters",
+      "label": "Media Converters",
+      "desc": "Industrial media converters for converting between copper and fiber interfaces. Extend network distances up to 120km with single-mode fiber."
+    }
+  ]
+}

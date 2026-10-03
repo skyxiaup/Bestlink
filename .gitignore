@@ -1,23 +1,24 @@
-# OS
-.DS_Store
-Thumbs.db
-
-# Editor
-.vscode/
-.idea/
-*.swp
-
-# Build output (Astro - future)
+# build output
 dist/
+# generated types
 .astro/
+
+# dependencies
 node_modules/
 
-# Environment
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+
+# environment variables
 .env
+.env.production
 
-# WordPress PHP files (not needed for static rebuild)
-*.php
-wp-config*.php
+# macOS-specific files
+.DS_Store
 
-# Logs
-*.log
+# jetbrains setting folder
+.idea/

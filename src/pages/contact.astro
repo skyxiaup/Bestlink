@@ -1,0 +1,126 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+<Base title="Contact Us">
+  <Header slot="header" />
+
+  <section class="container" style="padding-top:3rem; padding-bottom:4rem;">
+    <h1 class="section-title">Contact Us</h1>
+    <p class="section-subtitle">Get in touch with our team for product inquiries and technical support</p>
+
+    <div class="contact-grid">
+      <div class="contact-info">
+        <h2>Get in Touch</h2>
+        <p>We typically respond within 24 hours on business days. For urgent inquiries, please use WhatsApp.</p>
+
+        <div class="contact-methods">
+          <div class="contact-item">
+            <span class="contact-icon">📧</span>
+            <div>
+              <strong>Email</strong>
+              <a href="mailto:info@bestlinktec.com">info@bestlinktec.com</a>
+            </div>
+          </div>
+          <div class="contact-item">
+            <span class="contact-icon">📞</span>
+            <div>
+              <strong>Phone / WhatsApp</strong>
+              <a href="tel:+8675528288609">+86-755-28288609</a>
+            </div>
+          </div>
+          <div class="contact-item">
+            <span class="contact-icon">⏰</span>
+            <div>
+              <strong>Business Hours</strong>
+              <p>Mon–Fri: 9:00–18:00 (UTC+8, Shenzhen)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <form class="contact-form" method="POST" action="/contact/" id="contact-form">
+        <div class="form-group">
+          <label for="name">Name / 公司名称</label>
+          <input type="text" id="name" name="name" required placeholder="Your name or company" />
+        </div>
+        <div class="form-group">
+          <label for="email">Email / 邮箱</label>
+          <input type="email" id="email" name="email" required placeholder="your@email.com" />
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone / 电话 (optional)</label>
+          <input type="tel" id="phone" name="phone" placeholder="+1 234 567 8900" />
+        </div>
+        <div class="form-group">
+          <label for="product">Product of Interest / 感兴趣的产品</label>
+          <select id="product" name="product">
+            <option value="">-- Select --</option>
+            <option value="Industrial PoE Switches">Industrial PoE Switches</option>
+            <option value="Managed PoE Switches">Managed PoE Switches</option>
+            <option value="Media Converters">Media Converters</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="message">Message / 留言</label>
+          <textarea id="message" name="message" rows="5" required placeholder="Please describe your requirements..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;">Send Message</button>
+        <div id="form-status" style="margin-top:1rem; text-align:center;"></div>
+      </form>
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</Base>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const status = document.getElementById('form-status');
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(form));
+    try {
+      const res = await fetch('https://formspree.io/f/xwpkvgpn', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      });
+      if (res.ok) {
+        form.reset();
+        if (status) status.innerHTML = '<p style="color:#16a34a;">Message sent! We will reply within 24 hours.</p>';
+      } else {
+        if (status) status.innerHTML = '<p style="color:#dc2626;">Failed to send. Please email us directly.</p>';
+      }
+    } catch {
+      if (status) status.innerHTML = '<p style="color:#dc2626;">Network error. Please try again.</p>';
+    }
+  });
+</script>
+
+<style>
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-top: 3rem; }
+  .contact-info h2 { font-size: 1.5rem; margin-bottom: 1rem; color: #1a1a2e; }
+  .contact-info > p { color: #666; margin-bottom: 2rem; font-size: 0.95rem; }
+  .contact-methods { display: flex; flex-direction: column; gap: 1.5rem; }
+  .contact-item { display: flex; align-items: flex-start; gap: 1rem; }
+  .contact-icon { font-size: 1.5rem; }
+  .contact-item strong { display: block; font-size: 0.875rem; color: #374151; margin-bottom: 0.25rem; }
+  .contact-item a { color: #0066cc; font-size: 0.95rem; }
+  .contact-item p { font-size: 0.875rem; color: #666; margin: 0; }
+  .contact-form { background: #f9fafb; padding: 2rem; border-radius: 16px; border: 1px solid #e5e7eb; }
+  .form-group { margin-bottom: 1.25rem; }
+  .form-group label { display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem; }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db; border-radius: 8px;
+    font-size: 0.95rem; font-family: inherit;
+    background: #fff; transition: border-color 0.15s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    outline: none; border-color: #0066cc; box-shadow: 0 0 0 3px rgba(0,102,204,0.1);
+  }
+  @media (max-width: 900px) { .contact-grid { grid-template-columns: 1fr; } }
+</style>
