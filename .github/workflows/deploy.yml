@@ -13,19 +13,53 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install SSH client
-        run: |
-          apt-get update && apt-get install -y sshpass
-
-      - name: Deploy via SFTP
+      - name: Deploy via FTP
         env:
           SFTP_HOST: ${{ secrets.SFTP_HOST }}
           SFTP_PORT: ${{ secrets.SFTP_PORT }}
           SFTP_USER: ${{ secrets.SFTP_USER }}
           SFTP_PASSWORD: ${{ secrets.SFTP_PASSWORD }}
         run: |
-          sshpass -p "$SFTP_PASSWORD" sftp -o StrictHostKeyChecking=no -P "$SFTP_PORT" "$SFTP_USER@$SFTP_HOST" <<EOF
-            cd /bestlinktec.com/public_html/
-            put -r * ./
-            bye
-          EOF
+          python3 << 'PYEOF'
+          import os, ftplib
+
+          host   = os.environ["SFTP_HOST"]
+          port   = int(os.environ["SFTP_PORT"])
+          user   = os.environ["SFTP_USER"]
+          passwd = os.environ["SFTP_PASSWORD"]
+          remote_base = "/bestlinktec.com/public_html/"
+          local_base  = "."
+
+          exclude = {".git", ".github", ".gitignore", "CLAUDE.md",
+                     "node_modules", "dist", ".deploy-trigger",
+                     "__pycache__"}
+
+          ftp = ftplib.FTP()
+          ftp.connect(host, port)
+          ftp.login(user, passwd)
+          ftp.cwd(remote_base)
+          ftp.set_pasv(True)
+
+          def upload_dir(local_dir, remote_dir):
+              for entry in sorted(os.listdir(local_dir)):
+                  if entry in exclude:
+                      continue
+                  lp = os.path.join(local_dir, entry)
+                  rp = remote_dir + entry
+                  if os.path.isdir(lp):
+                      try:
+                          ftp.mkd(rp)
+                      except ftplib.error_perm:
+                          pass  # already exists
+                      ftp.cwd(rp)
+                      upload_dir(lp, rp + "/")
+                      ftp.cwd("..")
+                  else:
+                      print(f"  PUT {lp} -> {rp}")
+                      with open(lp, "rb") as f:
+                          ftp.storbinary(f"STOR {entry}", f)
+
+          upload_dir(local_base, "")
+          print("Deploy complete.")
+          ftp.quit()
+          PYEOF
