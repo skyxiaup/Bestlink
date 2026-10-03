@@ -13,21 +13,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy to SiteGround via SFTP
-        uses: appleboy/sftp-action@v0.2.0
-        with:
-          host: ${{ secrets.SFTP_HOST }}
-          port: ${{ secrets.SFTP_PORT }}
-          username: ${{ secrets.SFTP_USER }}
-          password: ${{ secrets.SFTP_PASSWORD }}
-          local_path: "./"
-          remote_path: "/bestlinktec.com/public_html/"
-          delete: false
-          exclude: |
-            .git/
-            .github/
-            .gitignore
-            CLAUDE.md
-            node_modules/
-            dist/
-            "*.log"
+      - name: Install SSH client
+        run: |
+          apt-get update && apt-get install -y sshpass
+
+      - name: Deploy via SFTP
+        env:
+          SFTP_HOST: ${{ secrets.SFTP_HOST }}
+          SFTP_PORT: ${{ secrets.SFTP_PORT }}
+          SFTP_USER: ${{ secrets.SFTP_USER }}
+          SFTP_PASSWORD: ${{ secrets.SFTP_PASSWORD }}
+        run: |
+          sshpass -p "$SFTP_PASSWORD" sftp -o StrictHostKeyChecking=no -P "$SFTP_PORT" "$SFTP_USER@$SFTP_HOST" <<EOF
+            cd /bestlinktec.com/public_html/
+            put -r * ./
+            bye
+          EOF
