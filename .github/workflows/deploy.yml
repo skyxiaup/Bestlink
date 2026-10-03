@@ -6,33 +6,45 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
       - name: Deploy via FTP
         env:
-          SFTP_HOST: ${{ secrets.SFTP_HOST }}
-          SFTP_PORT: ${{ secrets.SFTP_PORT }}
-          SFTP_USER: ${{ secrets.SFTP_USER }}
+          SFTP_HOST:     ${{ secrets.SFTP_HOST }}
+          SFTP_PORT:     ${{ secrets.SFTP_PORT }}
+          SFTP_USER:     ${{ secrets.SFTP_USER }}
           SFTP_PASSWORD: ${{ secrets.SFTP_PASSWORD }}
         run: |
           python3 << 'PYEOF'
-          import os, ftplib
+          import os, ftplib, json
 
           host   = os.environ["SFTP_HOST"]
-          port   = int(os.environ["SFTP_PORT"])
+          port   = int(os.environ.get("SFTP_PORT", 21))
           user   = os.environ["SFTP_USER"]
           passwd = os.environ["SFTP_PASSWORD"]
+
           remote_base = "/bestlinktec.com/public_html/"
-          local_base  = "."
+          local_base  = "dist"
 
           exclude = {".git", ".github", ".gitignore", "CLAUDE.md",
-                     "node_modules", "dist", ".deploy-trigger",
-                     "__pycache__"}
+                     "node_modules", ".astro", ".deploy-trigger",
+                     "src", "public", "astro.config.mjs", "package.json",
+                     "package-lock.json", "tsconfig.json", "__pycache__"}
 
           ftp = ftplib.FTP()
           ftp.connect(host, port)
@@ -40,7 +52,7 @@ jobs:
           ftp.cwd(remote_base)
           ftp.set_pasv(True)
 
-          def upload_dir(local_dir, remote_dir):
+          def clear_and_upload_dir(local_dir, remote_dir):
               for entry in sorted(os.listdir(local_dir)):
                   if entry in exclude:
                       continue
@@ -50,16 +62,16 @@ jobs:
                       try:
                           ftp.mkd(rp)
                       except ftplib.error_perm:
-                          pass  # already exists
+                          pass
                       ftp.cwd(rp)
-                      upload_dir(lp, rp + "/")
+                      clear_and_upload_dir(lp, rp + "/")
                       ftp.cwd("..")
                   else:
                       print(f"  PUT {lp} -> {rp}")
                       with open(lp, "rb") as f:
                           ftp.storbinary(f"STOR {entry}", f)
 
-          upload_dir(local_base, "")
+          clear_and_upload_dir(local_base, "")
           print("Deploy complete.")
           ftp.quit()
           PYEOF
