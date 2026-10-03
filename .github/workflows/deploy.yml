@@ -52,26 +52,33 @@ jobs:
           ftp.cwd(remote_base)
           ftp.set_pasv(True)
 
-          def clear_and_upload_dir(local_dir, remote_dir):
-              for entry in sorted(os.listdir(local_dir)):
-                  if entry in exclude:
-                      continue
-                  lp = os.path.join(local_dir, entry)
-                  rp = remote_dir + entry
-                  if os.path.isdir(lp):
-                      try:
-                          ftp.mkd(rp)
-                      except ftplib.error_perm:
-                          pass
-                      ftp.cwd(rp)
-                      clear_and_upload_dir(lp, rp + "/")
-                      ftp.cwd("..")
-                  else:
-                      print(f"  PUT {lp} -> {rp}")
-                      with open(lp, "rb") as f:
-                          ftp.storbinary(f"STOR {entry}", f)
+          def mkd_all(ftp, path):
+              for p in path.strip("/").split("/"):
+                  try: ftp.cwd(p)
+                  except ftplib.error_perm:
+                      ftp.mkd(p); ftp.cwd(p)
 
-          clear_and_upload_dir(local_base, "")
+          def upload_one(local, rel):
+              ftp = ftplib.FTP()
+              ftp.connect(host, port, timeout=60)
+              ftp.login(user, passwd)
+              ftp.cwd(remote_base)
+              ftp.set_pasv(True)
+              parts = rel.strip("/").split("/")
+              for p in parts[:-1]:
+                  mkd_all(ftp, p)
+              with open(local, "rb") as f:
+                  ftp.storbinary(f"STOR {parts[-1]}", f)
+              ftp.quit()
+
+          for root, dirs, files in os.walk(local_base):
+              for fname in sorted(files):
+                  if fname in exclude:
+                      continue
+                  local = os.path.join(root, fname)
+                  rel = os.path.relpath(local, local_base)
+                  print(f"  PUT {rel}")
+                  upload_one(local, rel)
+
           print("Deploy complete.")
-          ftp.quit()
           PYEOF
