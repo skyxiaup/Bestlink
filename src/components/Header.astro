@@ -1,7 +1,10 @@
 ---
+import products from '../data/products.json';
+const categories = products.categories;
+
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "/products/", label: "Products" },
+  { href: "/products/", label: "Products", dropdown: true },
   { href: "/about/", label: "About" },
   { href: "/contact/", label: "Contact" },
 ];
@@ -10,13 +13,25 @@ const currentPath = Astro.url.pathname;
 <header class="site-header">
   <div class="container header-inner">
     <a href="/" class="logo">
-      <img src="/images/logo.png" alt="BestLink" height="36" />
+      <span class="logo-text">BestLink</span>
     </a>
     <nav>
       {navLinks.map(link => (
-        <a href={link.href} class={currentPath === link.href || (link.href !== "/" && currentPath.startsWith(link.href)) ? "active" : ""}>
-          {link.label}
-        </a>
+        link.dropdown ? (
+          <div class="dropdown">
+            <a href={link.href} class={`nav-link ${currentPath.startsWith(link.href) ? "active" : ""}`}>
+              {link.label}
+              <svg class="dropdown-arrow" viewBox="0 0 20 20" fill="currentColor" width="12" height="12"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+            </a>
+            <div class="dropdown-menu">
+              {categories.map(cat => (
+                <a href={`/products/${cat.slug}/`} class="dropdown-item">{cat.label}</a>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <a href={link.href} class={`nav-link ${currentPath === link.href ? "active" : ""}`}>{link.label}</a>
+        )
       ))}
     </nav>
   </div>
@@ -41,23 +56,63 @@ const currentPath = Astro.url.pathname;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #1a1a2e;
+    font-size: 1.5rem;
+    font-weight: 800;
     text-decoration: none;
+    letter-spacing: -0.02em;
   }
+  .logo-text { color: #0066cc; }
   .logo:hover { text-decoration: none; }
-  nav { display: flex; gap: 0.25rem; }
-  nav a {
+  .logo-accent { color: #0066cc; }
+
+  nav { display: flex; gap: 0.25rem; align-items: center; }
+  .nav-link {
     padding: 0.5rem 0.875rem;
     border-radius: 6px;
     color: #4b5563;
     font-weight: 500;
     transition: all 0.15s;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    cursor: pointer;
   }
-  nav a:hover { background: #f3f4f6; color: #1a1a2e; text-decoration: none; }
-  nav a.active { color: #0066cc; background: #eff6ff; }
+  .nav-link:hover { background: #f3f4f6; color: #1a1a2e; }
+  .nav-link.active { color: #0066cc; background: #eff6ff; }
+
+  .dropdown { position: relative; }
+  .dropdown-arrow { transition: transform 0.2s; }
+  .dropdown:hover .dropdown-arrow { transform: rotate(180deg); }
+
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    min-width: 220px;
+    padding: 0.5rem;
+    z-index: 200;
+  }
+  .dropdown:hover .dropdown-menu { display: block; }
+
+  .dropdown-item {
+    display: block;
+    padding: 0.625rem 0.875rem;
+    border-radius: 6px;
+    color: #374151;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .dropdown-item:hover { background: #eff6ff; color: #0066cc; text-decoration: none; }
+
   @media (max-width: 640px) {
-    nav a { padding: 0.5rem 0.5rem; font-size: 0.875rem; }
+    .nav-link { padding: 0.5rem 0.5rem; font-size: 0.875rem; }
   }
 </style>

@@ -35,6 +35,7 @@ const featured = products.products.filter(p => p.featured);
           shortDesc={p.shortDesc}
           image={p.image}
           categoryLabel={p.categoryLabel}
+          category={p.category}
           poeBudget={p.poeBudget}
           management={p.management}
         />
@@ -51,7 +52,7 @@ const featured = products.products.filter(p => p.featured);
     <p class="section-subtitle">Find the right solution for your industrial application</p>
     <div class="category-grid">
       {products.categories.map(cat => (
-        <a href={`/products/?category=${cat.slug}`} class="category-card">
+        <a href={`/products/${cat.slug}/`} class="category-card">
           <h3>{cat.label}</h3>
           <p>{cat.desc}</p>
           <span class="cat-link">View Products →</span>

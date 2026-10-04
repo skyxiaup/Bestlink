@@ -2,51 +2,115 @@
 import Base from '../../layouts/Base.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import ProductCard from '../../components/ProductCard.astro';
 import products from '../../data/products.json';
 
 export function getStaticPaths() {
-  return products.products.map(p => ({ params: { slug: p.slug } }));
+  const paths = [];
+
+  // Category index pages
+  products.categories.forEach(cat => {
+    paths.push({ params: { slug: cat.slug } });
+  });
+
+  // New-format product pages
+  products.products.forEach(p => {
+    paths.push({ params: { slug: `${p.category}/${p.slug}` } });
+  });
+
+  // Legacy product pages
+  products.products.forEach(p => {
+    paths.push({ params: { slug: p.slug } });
+  });
+
+  return paths;
 }
 
 const { slug } = Astro.params;
-const product = products.products.find(p => p.slug === slug);
+const parts = slug.split('/');
 
-if (!product) {
+// Determine page type
+const isCategoryIndex = parts.length === 1 && products.categories.some(c => c.slug === parts[0]);
+const isNewFormat = parts.length === 2 && products.categories.some(c => c.slug === parts[0]);
+const isLegacyProduct = parts.length === 1 && products.products.some(p => p.slug === parts[0]);
+
+// Compute page data
+let pageType = 'notFound';
+let category = null;
+let product = null;
+let related = [];
+let filtered = [];
+
+if (isCategoryIndex) {
+  pageType = 'category';
+  category = products.categories.find(c => c.slug === parts[0]);
+  filtered = products.products.filter(p => p.category === category.slug);
+} else if (isNewFormat || isLegacyProduct) {
+  pageType = 'product';
+  const productSlug = isNewFormat ? parts[1] : parts[0];
+  product = products.products.find(p => p.slug === productSlug);
+  if (product) {
+    category = products.categories.find(c => c.slug === product.category);
+    related = products.products
+      .filter(p => p.category === product.category && p.slug !== product.slug)
+      .slice(0, 3);
+  }
+} else {
   return Astro.redirect('/products/');
 }
-
-const related = products.products
-  .filter(p => p.category === product.category && p.slug !== slug)
-  .slice(0, 3);
 ---
+{pageType === 'category' && category && (
+<Base title={category.label}>
+  <Header slot="header" />
+  <section class="container" style="padding-top:3rem; padding-bottom:3rem;">
+    <h1 class="section-title">{category.label}</h1>
+    <p class="section-subtitle">{category.desc}</p>
+    <div class="filter-bar">
+      <a href="/products/" class="filter-btn">All Products</a>
+      {products.categories.map(cat => (
+        <a href={`/products/${cat.slug}/`} class={`filter-btn ${cat.slug === category.slug ? 'active' : ''}`}>
+          {cat.label}
+        </a>
+      ))}
+    </div>
+    <div class="product-grid">
+      {filtered.map(p => (
+        <ProductCard
+          slug={p.slug}
+          model={p.model}
+          name={p.name}
+          shortDesc={p.shortDesc}
+          image={p.image}
+          categoryLabel={p.categoryLabel}
+          category={p.category}
+          poeBudget={p.poeBudget}
+          management={p.management}
+        />
+      ))}
+    </div>
+  </section>
+  <Footer slot="footer" />
+</Base>
+)}
+{pageType === 'product' && product && (
 <Base title={`${product.model} - ${product.name}`} description={product.shortDesc}>
   <Header slot="header" />
-
   <section class="container" style="padding-top:2rem; padding-bottom:4rem;">
-    <!-- Breadcrumb -->
     <nav class="breadcrumb">
-      <a href="/">Home</a>
-      <span>/</span>
-      <a href="/products/">Products</a>
-      <span>/</span>
-      <a href={`/products/${product.category}/`}>{product.categoryLabel}</a>
-      <span>/</span>
+      <a href="/">Home</a><span>/</span>
+      <a href="/products/">Products</a><span>/</span>
+      <a href={`/products/${product.category}/`}>{product.categoryLabel}</a><span>/</span>
       <span>{product.model}</span>
     </nav>
-
     <div class="product-detail">
-      <!-- Image -->
       <div class="product-image">
         <img src={product.image} alt={product.model} />
       </div>
-
-      <!-- Info -->
       <div class="product-info">
         <span class="category-badge">{product.categoryLabel}</span>
         <h1>{product.model}</h1>
         <p class="product-name">{product.name}</p>
         <p class="product-desc">{product.shortDesc}</p>
-
         <div class="spec-table">
           {product.poeBudget && (
             <div class="spec-row">
@@ -85,15 +149,12 @@ const related = products.products
             </div>
           )}
         </div>
-
         <div class="cta-buttons">
           <a href="/contact/" class="btn btn-primary">Request a Quote</a>
           <a href={`/products/${product.category}/`} class="btn btn-outline">← Back to {product.categoryLabel}</a>
         </div>
       </div>
     </div>
-
-    <!-- Related Products -->
     {related.length > 0 && (
       <div class="related">
         <h2>Related Products</h2>
@@ -111,15 +172,29 @@ const related = products.products
       </div>
     )}
   </section>
-
   <Footer slot="footer" />
 </Base>
+)}
+{pageType === 'notFound' && (
+  <Base title="Page Not Found">
+    <Header slot="header" />
+    <section class="container" style="padding:4rem 0; text-align:center;">
+      <h1>Page Not Found</h1>
+      <a href="/products/">← Back to Products</a>
+    </section>
+    <Footer slot="footer" />
+  </Base>
+)}
 
 <style>
+  .filter-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 2rem 0 2.5rem; justify-content: center; }
+  .filter-btn { padding: 0.5rem 1.25rem; border: 1px solid #e5e7eb; border-radius: 999px; color: #666; font-size: 0.875rem; font-weight: 500; transition: all 0.15s; background: #fff; }
+  .filter-btn:hover { border-color: #0066cc; color: #0066cc; text-decoration: none; }
+  .filter-btn.active { background: #0066cc; color: #fff; border-color: #0066cc; }
+  .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
   .breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: #666; margin-bottom: 2rem; flex-wrap: wrap; }
   .breadcrumb a { color: #0066cc; }
   .breadcrumb span { color: #9ca3af; }
-
   .product-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
   .product-image { background: #f9fafb; border-radius: 16px; overflow: hidden; }
   .product-image img { width: 100%; height: auto; object-fit: cover; aspect-ratio: 4/3; }
@@ -128,15 +203,12 @@ const related = products.products
   .product-info h1 { font-size: 2rem; color: #1a1a2e; margin-bottom: 0.25rem; }
   .product-name { font-size: 1rem; color: #666; margin-bottom: 1rem; }
   .product-desc { font-size: 1.1rem; color: #374151; line-height: 1.7; margin-bottom: 2rem; }
-
   .spec-table { border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; margin-bottom: 2rem; }
   .spec-row { display: flex; border-bottom: 1px solid #f3f4f6; }
   .spec-row:last-child { border-bottom: none; }
   .spec-label { width: 40%; padding: 0.875rem 1.25rem; background: #f9fafb; font-weight: 600; font-size: 0.875rem; color: #374151; }
   .spec-value { width: 60%; padding: 0.875rem 1.25rem; font-size: 0.875rem; color: #1a1a2e; }
-
   .cta-buttons { display: flex; gap: 1rem; flex-wrap: wrap; }
-
   .related { margin-top: 4rem; padding-top: 3rem; border-top: 1px solid #e5e7eb; }
   .related h2 { font-size: 1.5rem; margin-bottom: 1.5rem; }
   .related-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
@@ -145,7 +217,6 @@ const related = products.products
   .related-card img { width: 80px; height: 60px; object-fit: cover; border-radius: 8px; flex-shrink: 0; background: #f9fafb; }
   .related-card strong { display: block; font-size: 0.9rem; color: #1a1a2e; margin-bottom: 0.25rem; }
   .related-card p { font-size: 0.75rem; color: #666; margin: 0; }
-
   @media (max-width: 900px) {
     .product-detail { grid-template-columns: 1fr; }
     .related-grid { grid-template-columns: 1fr; }

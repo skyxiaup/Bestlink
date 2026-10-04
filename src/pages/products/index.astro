@@ -25,7 +25,7 @@ const activeCategory = products.categories.find(c => c.slug === category);
     <div class="filter-bar">
       <a href="/products/" class={`filter-btn ${!category ? 'active' : ''}`}>All</a>
       {products.categories.map(cat => (
-        <a href={`/products/?category=${cat.slug}`} class={`filter-btn ${category === cat.slug ? 'active' : ''}`}>
+        <a href={`/products/${cat.slug}/`} class={`filter-btn ${category === cat.slug ? 'active' : ''}`}>
           {cat.label}
         </a>
       ))}
@@ -40,6 +40,7 @@ const activeCategory = products.categories.find(c => c.slug === category);
           shortDesc={p.shortDesc}
           image={p.image}
           categoryLabel={p.categoryLabel}
+          category={p.category}
           poeBudget={p.poeBudget}
           management={p.management}
         />

@@ -6,19 +6,20 @@ interface Props {
   shortDesc: string;
   image: string;
   categoryLabel: string;
+  category: string;
   poeBudget?: string;
   management?: string;
 }
 
-const { slug, model, name, shortDesc, image, categoryLabel, poeBudget, management } = Astro.props;
+const { slug, model, name, shortDesc, image, categoryLabel, category, poeBudget, management } = Astro.props;
 ---
 <article class="product-card">
-  <a href={`/products/${slug}/`} class="card-image">
+  <a href={`/products/${category}/${slug}/`} class="card-image">
     <img src={image} alt={model} loading="lazy" />
     <span class="category-badge">{categoryLabel}</span>
   </a>
   <div class="card-body">
-    <h3><a href={`/products/${slug}/`}>{model}</a></h3>
+    <h3><a href={`/products/${category}/${slug}/`}>{model}</a></h3>
     <p class="product-name">{name}</p>
     <p class="product-desc">{shortDesc}</p>
     <div class="specs">
